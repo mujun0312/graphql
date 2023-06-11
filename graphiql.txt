@@ -1,0 +1,164 @@
+# Welcome to GraphiQL
+#
+# GraphiQL is an in-browser tool for writing, validating, and
+# testing GraphQL queries.
+#
+# Type queries into this side of the screen, and you will see intelligent
+# typeaheads aware of the current GraphQL type schema and live syntax and
+# validation errors highlighted within the text.
+#
+# GraphQL queries typically start with a "{" character. Lines that start
+# with a # are ignored.
+#
+# An example GraphQL query might look like:
+#
+#     {
+#       field(arg: "value") {
+#         subField
+#       }
+#     }
+#
+# Keyboard shortcuts:
+#
+#   Prettify query:  Shift-Ctrl-P (or press the prettify button)
+#
+#  Merge fragments:  Shift-Ctrl-M (or press the merge button)
+#
+#        Run Query:  Ctrl-Enter (or press the play button)
+#
+#    Auto Complete:  Ctrl-Space (or just start typing)
+#
+# 对简单类型的查询
+# query {
+#   events
+# }
+
+# 对简单类型的操作
+# mutation {
+#   createEvent(name : "zhangsan")
+# }
+
+# 调用events方法查询Event对象中我想要的id和title属性
+# 可以自定义我想要返回的查询字段
+# query {
+#   events {
+#     id
+#     title
+#     description
+#     price
+#     date
+#     creator {
+#       id
+#       email
+#       createdEvents {
+#         id
+#         title
+#         description
+#         price
+#         date
+#       }
+#     }
+#   }
+# }
+
+query {
+  users {
+    id
+    email
+    createdEvents {
+      id
+      title
+      description
+    }
+    bookings {
+      id
+      event {
+        id
+      }
+    }
+  }
+}
+
+# query {
+#   login(loginInput: {
+#     email: "test@example.com"
+#     password: "test"
+#   }) {
+#     userId
+#     token
+#     tokenExpiration
+#   }
+# }
+
+# query {
+#   bookings {
+#     user {
+#       id
+#       email
+#     }
+#     event {
+#       id
+#       title
+#     }
+#   }
+# }
+
+# 调用createEvent方法创建Event对象
+# mutation {
+#   createEvent(eventInput: {
+#     title: "test event"
+#     description: "test event"
+#     price: 100
+#     date: "2023-06-11 01:01:03"
+#   }) {
+#     # 因为createEvent方法是有返回值类型的：Event
+#     # 此处是用来选择返回Event对象中的哪些属性
+#     id
+#     title
+#     description
+#     price
+#     date
+#     creator {
+#       id
+#       email
+#     }
+#   }
+# }
+
+# 调用createUser方法创建User对象
+# mutation {
+#   createUser(userInput: {
+#     email: "test@example.com"
+#     password: "test"
+#   }) {
+#     id
+#     email
+#   }
+# }
+
+# mutation {
+#   bookEvent(eventId: 1023) {
+#     id
+#     user {
+#       id
+#       email
+#     }
+#     event {
+#       id
+#       title
+#       creator {
+#         id
+#         email
+#       }
+#     }
+#     createdAt
+#     updatedAt
+#   }
+# }
+
+# mutation {
+#   cancelBooking(bookingId: 1) {
+#     title
+#     description
+#   }
+# }
