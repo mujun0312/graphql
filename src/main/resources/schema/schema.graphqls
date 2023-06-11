@@ -1,0 +1,104 @@
+# schema的定义，此处没有引入复杂模型，只有对简单类型String的操作
+type Query {
+    # 定义events方法
+    # **********************************************
+    # 该events方法的出参是一个集合
+    # 集合内的元素类型是String，加"!"表示返回的集合不能为空
+    # events: [String!]
+    # **********************************************
+    # 集合内的元素类型是Event对象
+    # 内部加"!"表示返回的集合内的元素不能为空
+    # 外部加"!"表示返回的集合不能为空
+    events: [Event!]!
+
+    # **********************************************
+    # users方法，用来查询User对象集合
+    users: [User!]!
+
+    # **********************************************
+    # login方法，用来获取认证信息
+    login(loginInput: LoginInput!): AuthData!
+
+    # **********************************************
+    bookings: [Booking!]!
+}
+
+type Mutation {
+    # 定义createEvent方法
+    # **********************************************
+    # 该createEvent方法，有一个名为name的入参，参数类型为String
+    # 该createEvent方法，有一个出参，String表示出参类型
+    # createEvent(name: String): String
+    # **********************************************
+    # 该createEvent方法，有一个名为eventInput的入参，参数类型为自定义的EventInput对象
+    # 该createEvent方法，有一个出参，出参类型为自定义的Event对象
+    createEvent(eventInput: EventInput!): Event!
+
+    # **********************************************
+    # createUser方法，有一个名为userInput的入参，参数类型为自定义的UserInput对象
+    # createUser方法，有一个出参，出参类型为自定义的User对象
+    createUser(userInput: UserInput!): User!
+
+    # **********************************************
+    bookEvent(eventId: ID!): Booking!
+    cancelBooking(bookingId: ID!): Event!
+}
+
+# 使用关键字input来定义一个EventInput对象
+# 注意：input关键字定义的对象，只能用于方法的入参
+input EventInput {
+    title: String!
+    description: String!
+    price: Float!
+    date: String!
+}
+
+# 使用关键字input来定义UserInput对象 - 登录相关的对象
+input UserInput {
+    email: String!
+    password: String
+}
+
+# 使用关键字input来定义LoginInput对象
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+# 定义一个Event对象
+# 该对象有以下5个属性
+type Event {
+    id: ID! # 属性id，类型为ID，"!"表示该字段必须要有
+    title: String! # 属性title，类型为String，"!"表示该字段必须要有
+    description: String! # 属性description，类型为String，"!"表示该字段必须要有
+    price: Float! # 属性price，类型为Float，"!"表示该字段必须要有
+    date: String! # 属性date，类型为String，"!"表示该字段必须要有
+    creator: User! # 属性user，类型为自定义的对象User
+}
+
+# 定义User对象
+type User {
+    id: ID!
+    email: String!
+    password: String # 属性password，没有标记为必须，这里是考虑到输出User对象的时候，不想将password也输出
+    # 属性createdEvents，代表当前user创建了哪些Events
+    # 此处的含义是：
+    # 如果集合不为空，里面的元素不能为空
+    # []外没有加"!"，代表当前返回的createdEvents可以为空
+    createdEvents: [Event!]
+    bookings: [Booking!]
+}
+
+type AuthData {
+    userId: ID!
+    token: String!
+    tokenExpiration: Int!
+}
+
+type Booking {
+    id: ID!
+    event: Event!
+    user: User!
+    createdAt: String!
+    updatedAt: String!
+}
